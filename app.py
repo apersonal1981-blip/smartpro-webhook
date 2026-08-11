@@ -1,6 +1,5 @@
 import os
-import smtplib
-from email.mime.text import MIMEText
+import requests
 from flask import Flask, request, jsonify
 from openai import OpenAI
 
@@ -29,17 +28,25 @@ PANE_GUIDE = (
 )
 
 def send_email(to_email, subject, body):
-    gmail_address = os.environ["GMAIL_ADDRESS"]
-    gmail_password = os.environ["GMAIL_APP_PASSWORD"]
-    msg = MIMEText(body)
-    msg["Subject"] = subject
-    msg["From"] = gmail_address
-    msg["To"] = to_email
-    server = smtplib.SMTP("smtp.gmail.com", 587)
-    server.starttls()
-    server.login(gmail_address, gmail_password)
-    server.sendmail(gmail_address, to_email, msg.as_string())
-    server.quit()
+    api_key = os.environ["BREVO_API_KEY"]
+    sender_email = os.environ["SENDER_EMAIL"]
+
+    response = requests.post(
+        "https://api.brevo.com/v3/smtp/email",
+        headers={
+            "api-key": api_key,
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+        },
+        json={
+            "sender": {"email": sender_email, "name": "SmartPro Window & Gutter Cleaning"},
+            "to": [{"email": to_email}],
+            "subject": subject,
+            "textContent": body,
+        },
+        timeout=30,
+    )
+    response.raise_for_status()
 
 @app.route("/webhook", methods=["POST"])
 def webhook():
