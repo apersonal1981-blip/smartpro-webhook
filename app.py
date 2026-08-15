@@ -10,27 +10,28 @@ BUSINESS_NAME = "SmartPro Window & Gutter Cleaning LLC"
 BUSINESS_PHONE = "970-716-0591"
 SERVICE_AREA = "Parker, Elizabeth, Aurora, Centennial & surrounding areas"
 
-RATE_IN_OUT_SCREENS = 13
-RATE_EXT_SCREENS = 9
-RATE_EXT_NO_SCREENS = 8
+RATE_INOUT_DOUBLE = 30
+RATE_INOUT_SINGLE = 15
+RATE_EXT_SCREENS_DOUBLE = 20
+RATE_EXT_SCREENS_SINGLE = 10
+RATE_EXT_NOSCREENS_DOUBLE = 18
+RATE_EXT_NOSCREENS_SINGLE = 9
 
 GUTTER_1_STORY = 199
 GUTTER_2_STORY = 299
 GUTTER_DOWNSPOUT = 25
 
-PANE_GUIDE = (
-    "How We Count Window Panes:\n"
-    "- One solid piece of glass = 1 pane, even with decorative grids on top.\n"
-    "- If you can feel a raised divider across the glass, that is a separate pane.\n"
-    "- Sliding windows and sliding glass doors count as 2 panes.\n"
-    "- French-style windows with real dividers: each piece of glass is its own pane.\n"
-    "- Not sure? Send a photo and we will count for you at no charge."
+WINDOW_GUIDE = (
+    "How We Count Windows:\n"
+    "- A double-pane window has two separate glass sections (like a double-hung or slider).\n"
+    "- A single-pane window is one solid piece of glass with no dividing sash.\n"
+    "- Decorative grids glued on top of the glass do not count as extra panes.\n"
+    "- Not sure? Send a photo and we will count them for you at no charge."
 )
 
 def send_email(to_email, subject, body):
     api_key = os.environ["BREVO_API_KEY"]
     sender_email = os.environ["SENDER_EMAIL"]
-
     response = requests.post(
         "https://api.brevo.com/v3/smtp/email",
         headers={
@@ -58,7 +59,9 @@ def webhook():
     client_phone = data.get("phone", "")
     client_email = data.get("email", "")
 
-    pane_count = int(data.get("pane_count", 0) or 0)
+    double_count = int(data.get("double_pane_count", 0) or 0)
+    single_count = int(data.get("single_pane_count", 0) or 0)
+
     want_gutter = str(data.get("want_gutter", "no")).lower() in ("yes", "y", "true")
     gutter_stories = str(data.get("gutter_stories", "1"))
     clogged_downspouts = int(data.get("clogged_downspouts", 0) or 0)
@@ -68,14 +71,14 @@ def webhook():
     silicone = str(data.get("silicone", "no")).lower() in ("yes", "y", "true")
     notes = data.get("notes", "")
 
-    option_1_price = pane_count * RATE_IN_OUT_SCREENS
-    option_2_price = pane_count * RATE_EXT_SCREENS
-    option_3_price = pane_count * RATE_EXT_NO_SCREENS
+    option_1_price = (double_count * RATE_INOUT_DOUBLE) + (single_count * RATE_INOUT_SINGLE)
+    option_2_price = (double_count * RATE_EXT_SCREENS_DOUBLE) + (single_count * RATE_EXT_SCREENS_SINGLE)
+    option_3_price = (double_count * RATE_EXT_NOSCREENS_DOUBLE) + (single_count * RATE_EXT_NOSCREENS_SINGLE)
 
     window_options_text = (
-        "Option 1: Interior/Exterior window cleaning (screens/tracks included) - $" + str(option_1_price) + "\n"
+        "Option 1: Interior/Exterior window cleaning (screens/tracks always included) - $" + str(option_1_price) + "\n"
         "Option 2: Exterior window cleaning only with screens - $" + str(option_2_price) + "\n"
-        "Option 3: Exterior window cleaning only no screens - $" + str(option_3_price)
+        "Option 3: Exterior window cleaning only, no screens - $" + str(option_3_price)
     )
 
     gutter_text = "Not requested."
@@ -106,23 +109,24 @@ def webhook():
         "Customer:\n"
         "Name: " + client_name + "\n"
         "Service address: " + address + "\n"
-        "Customer phone: " + (client_phone or "Not included") + "\n\n"
-        "Window options (use exact prices given, pane count = " + str(pane_count) + "):\n"
-        + window_options_text + "\n\n"
+        "Customer phone: " + (client_phone or "Not included") + "\n"
+        "Double-pane windows: " + str(double_count) + "\n"
+        "Single-pane windows: " + str(single_count) + "\n\n"
+        "Window options (use exact prices given):\n" + window_options_text + "\n\n"
         "Gutter cleaning add-on:\n" + gutter_text + "\n\n"
         "Special job conditions present: " + conditions_text + "\n\n"
-        "Pane counting reference (include near the end, titled 'How We Count Window Panes'):\n"
-        + PANE_GUIDE + "\n\n"
+        "Window counting reference (include near the end, titled 'How We Count Windows'):\n"
+        + WINDOW_GUIDE + "\n\n"
         "Additional notes:\n" + (notes or "None") + "\n\n"
         "Rules:\n"
         "- Use only the prices supplied above. Never invent or change prices.\n"
         "- Start with the business name, then Client and Service Address.\n"
-        "- List the three window options clearly.\n"
+        "- List the three window options clearly. Mention screens/tracks are always included in Option 1.\n"
         "- If gutter cleaning was requested, list it as a clearly separate add-on section with its own subtotal.\n"
         "- If special conditions are present, add a short professional note that extra labor/time applies and will "
         "be billed after an on-site inspection. Do not invent a dollar amount for this.\n"
         "- If no special conditions are present, omit that note entirely.\n"
-        "- Include the pane counting section near the end, reworded naturally.\n"
+        "- Include the window counting section near the end, reworded naturally.\n"
         "- End with: Reply with your preferred option and the date that works best for you.\n"
         "- Then end with: Call or Text Omar: 970-716-0591\n"
         "- Friendly, professional, neighborly, and not pushy. No emojis, no markdown tables.\n"
