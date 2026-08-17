@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SmartPro Window & Gutter Cleaning - Get Your Quote</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body { font-family: Arial, sans-serif; max-width: 480px; margin: 20px auto; padding: 0 16px; }
+h1 { font-size: 22px; }
+label { display: block; margin-top: 14px; font-weight: bold; }
+input, select, textarea { width: 100%; padding: 8px; margin-top: 4px; box-sizing: border-box; }
+button { margin-top: 20px; padding: 12px; width: 100%; background: #1a73e8; color: white; border: none; font-size: 16px; border-radius: 4px; }
+</style>
+</head>
+<body>
+<h1>SmartPro Window & Gutter Cleaning</h1>
+<p>Fill this out for a fast, accurate quote.</p>
+<form action="https://formspree.io/f/mwvgyzwa" method="POST">
+  <label>Full Name</label>
+  <input type="text" name="name" required>
+
+  <label>Service Address</label>
+  <input type="text" name="address" required>
+
+  <label>Phone Number</label>
+  <input type="tel" name="phone" required>
+
+  <label>Email</label>
+  <input type="email" name="email" required>
+
+  <label>Number of double-pane windows</label>
+  <input type="number" name="double_pane_count" value="0" required>
+
+  <label>Number of single-pane windows</label>
+  <input type="number" name="single_pane_count" value="0" required>
+
+  <label>Would you like gutter cleaning too?</label>
+  <select name="want_gutter">
+    <option value="no">No</option>
+    <option value="yes">Yes</option>
+  </select>
+
+  <label>If yes, how many stories is your house?</label>
+  <select name="gutter_stories">
+    <option value="1">1 Story</option>
+    <option value="2">2 Story</option>
+  </select>
+
+  <label>Approximate home square footage</label>
+  <input type="number" name="gutter_sqft" placeholder="e.g. 2200" value="0">
+
+  <label>How many clogged downspouts?</label>
+  <input type="number" name="clogged_downspouts" value="0">
+
+  <label>Do you suspect any downspout needs snaking or disassembly (heavy clog, animal nest, etc.)?</label>
+  <select name="possible_snake_work">
+    <option value="no">No</option>
+    <option value="yes">Yes</option>
+  </select>
+
+  <label>Do you have underground downspout drainage that needs work?</label>
+  <select name="underground_drainage">
+    <option value="no">No</option>
+    <option value="yes">Yes</option>
+  </select>
+
+  <label>Any post-construction debris on windows?</label>
+  <select name="post_construction">
+    <option value="no">No</option>
+    <option value="yes">Yes</option>
+  </select>
+
+  <label>Any paint or stucco overspray on windows?</label>
+  <select name="overspray">
+    <option value="no">No</option>
+    <option value="yes">Yes</option>
+  </select>
+
+  <label>Any silicone or caulking residue on windows?</label>
+  <select name="silicone">
+    <option value="no">No</option>
+    <option value="yes">Yes</option>
+  </select>
+
+  <label>Anything else we should know?</label>
+  <textarea name="notes"></textarea>
+
+  <button type="submit">Get My Quote</button>
+</form>
+</body>
+</html>
