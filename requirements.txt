@@ -2,3 +2,5 @@ flask
 openai
 gunicorn
 requests
+
+twilio>=9.0.0
