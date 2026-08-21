@@ -219,3 +219,32 @@ def webhook():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+
+import os
+from openai import OpenAI
+from twilio.rest import Client as TwilioClient
+
+openai_client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+twilio_client = TwilioClient(
+    os.getenv("TWILIO_ACCOUNT_SID"),
+    os.getenv("TWILIO_AUTH_TOKEN"),
+)
+TWILIO_NUMBER = os.getenv("TWILIO_NUMBER")
+
+def send_sms(to: str, body: str):
+    if not to or not body:
+        return
+    twilio_client.messages.create(
+        to=to,
+        from_=TWILIO_NUMBER,
+        body=body,
+    )
+
+def generate_quote_text(prompt: str) -> str:
+    response = openai_client.responses.create(
+        model="gpt-4.1-mini",
+        input=prompt,
+    )
+    return response.output_text
+
