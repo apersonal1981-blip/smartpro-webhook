@@ -248,3 +248,17 @@ def generate_quote_text(prompt: str) -> str:
     )
     return response.output_text
 
+
+@app.route("/sms-quote", methods=["POST"])
+def sms_quote():
+    data = request.get_json() or {}
+
+    customer_phone = data.get("phone")
+    prompt = data.get("prompt") or "SmartPro window and gutter cleaning quote request."
+
+    quote_text = generate_quote_text(prompt)
+
+    if customer_phone:
+        send_sms(customer_phone, quote_text)
+
+    return {"quote": quote_text}
